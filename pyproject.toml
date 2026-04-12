@@ -35,6 +35,10 @@ fail_under = 80
 
 [dependency-groups]
 dev = [
+    "mypy>=1.20.0",
     "pytest>=8.0",
     "pytest-cov>=6.0",
+    "python-semantic-release>=10.5.3",
+    "ruff>=0.15.10",
+    "types-pyyaml>=6.0.12.20260408",
 ]
