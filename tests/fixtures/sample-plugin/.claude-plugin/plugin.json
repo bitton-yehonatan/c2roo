@@ -1,0 +1,9 @@
+{
+  "name": "sample-plugin",
+  "version": "1.0.0",
+  "description": "A sample plugin for testing",
+  "author": {
+    "name": "Test Author",
+    "email": "test@example.com"
+  }
+}
