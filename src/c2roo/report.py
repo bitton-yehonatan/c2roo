@@ -1,8 +1,5 @@
 from dataclasses import dataclass, field
 
-from rich.console import Console
-from rich.panel import Panel
-
 
 @dataclass
 class ConversionReport:
@@ -39,7 +36,7 @@ class ConversionReport:
         lines = []
 
         def _status(count: int, label: str, extra: str = "") -> str:
-            icon = "✓" if not extra else "~"
+            icon = "+" if not extra else "~"
             suffix = f" ({extra})" if extra else ""
             return f" {icon} {label + ':':<11} {count} converted{suffix}"
 
@@ -47,11 +44,11 @@ class ConversionReport:
         lines.append(_status(self.command_count, "Commands"))
 
         agent_extra = "model pref lost" if self.agent_count > 0 else ""
-        agent_label = "Agents → modes" if self.agent_count > 0 else "Agents"
+        agent_label = "Agents->modes" if self.agent_count > 0 else "Agents"
         lines.append(_status(self.agent_count, agent_label, agent_extra))
 
         hook_extra = "not enforced" if self.hook_count > 0 else ""
-        hook_label = "Hooks → rules" if self.hook_count > 0 else "Hooks"
+        hook_label = "Hooks->rules" if self.hook_count > 0 else "Hooks"
         lines.append(_status(self.hook_count, hook_label, hook_extra))
 
         lines.append(_status(self.mcp_count, "MCP"))
@@ -84,8 +81,12 @@ class ConversionReport:
         return "\n".join(lines)
 
     def print(self, output_path: str) -> None:
-        """Print the report to the terminal using Rich."""
-        console = Console()
+        """Print the report to the terminal."""
+        import click
+
         text = self.render(output_path)
-        panel = Panel(text, title=f"Conversion Report: {self.plugin_name}", expand=False)
-        console.print(panel)
+        header = f"--- Conversion Report: {self.plugin_name} ---"
+        footer = "-" * len(header)
+        click.echo(header)
+        click.echo(text)
+        click.echo(footer)
