@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.svg" alt="c2roo logo" width="600"/>
+  <img src="logo.svg" alt="c2roo logo" width="100"/>
 </p>
 
 <p align="center">
