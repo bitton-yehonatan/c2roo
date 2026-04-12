@@ -1,5 +1,5 @@
-from c2roo.models.hook import Hook
 from c2roo.converter.hook_converter import convert_hooks
+from c2roo.models.hook import Hook
 
 
 def test_convert_hooks_to_guidance():

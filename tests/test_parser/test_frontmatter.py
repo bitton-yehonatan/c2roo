@@ -1,5 +1,3 @@
-import pytest
-
 from c2roo.parser.frontmatter import parse_frontmatter
 
 

@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 import yaml
 
@@ -58,7 +57,12 @@ def test_write_agent_mode_and_rules(tmp_path):
     writer = RooWriter(output_root=output_root, force=False, dry_run=False)
     agent = ConvertedAgent(
         slug="code-reviewer",
-        mode={"slug": "code-reviewer", "name": "Code Reviewer", "roleDefinition": "Expert reviewer.", "groups": ["read"]},
+        mode={
+            "slug": "code-reviewer",
+            "name": "Code Reviewer",
+            "roleDefinition": "Expert reviewer.",
+            "groups": ["read"],
+        },
         rules_content="# Rules\nReview code.",
     )
     writer.write_agent(agent)

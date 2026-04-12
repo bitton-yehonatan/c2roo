@@ -34,7 +34,11 @@ class MarketplaceRegistry:
         if not self.config_path.exists():
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
             self.config_path.write_text(
-                yaml.dump({"marketplaces": DEFAULT_MARKETPLACES}, default_flow_style=False, sort_keys=False),
+                yaml.dump(
+                    {"marketplaces": DEFAULT_MARKETPLACES},
+                    default_flow_style=False,
+                    sort_keys=False,
+                ),
                 encoding="utf-8",
             )
 
@@ -103,7 +107,9 @@ class MarketplaceRegistry:
         finally:
             shutil.rmtree(temp_dir, ignore_errors=True)
 
-    def search_plugin(self, plugin_name: str, source_filter: str | None = None) -> tuple[dict, dict] | None:
+    def search_plugin(
+        self, plugin_name: str, source_filter: str | None = None
+    ) -> tuple[dict, dict] | None:
         """Search marketplaces for a plugin by name.
 
         Returns (plugin_entry, marketplace_source) or None.

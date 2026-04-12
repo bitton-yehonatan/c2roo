@@ -1,10 +1,15 @@
-from c2roo.models.command import Command
 from c2roo.converter.command_converter import convert_command
+from c2roo.models.command import Command
 
 
 def test_convert_command_drops_allowed_tools():
-    cmd = Command(name="commit", description="Create a git commit", argument_hint="<optional message>",
-        allowed_tools="Bash(git add:*), Bash(git commit:*)", body="## Context\n!`git status`\n\nCreate a commit.")
+    cmd = Command(
+        name="commit",
+        description="Create a git commit",
+        argument_hint="<optional message>",
+        allowed_tools="Bash(git add:*), Bash(git commit:*)",
+        body="## Context\n!`git status`\n\nCreate a commit.",
+    )
     result = convert_command(cmd)
     assert result.frontmatter["description"] == "Create a git commit"
     assert result.frontmatter["argument-hint"] == "<optional message>"

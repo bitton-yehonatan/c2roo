@@ -83,11 +83,15 @@ class RooWriter:
                 existing_modes.append(agent.mode)
                 roomodes_path.parent.mkdir(parents=True, exist_ok=True)
                 roomodes_path.write_text(
-                    yaml.dump({"customModes": existing_modes}, default_flow_style=False, sort_keys=False),
+                    yaml.dump(
+                        {"customModes": existing_modes}, default_flow_style=False, sort_keys=False
+                    ),
                     encoding="utf-8",
                 )
             else:
-                self.skipped_files.append((roomodes_path, f"mode slug '{agent.slug}' already exists"))
+                self.skipped_files.append(
+                    (roomodes_path, f"mode slug '{agent.slug}' already exists")
+                )
 
         self.written_files.append(roomodes_path)
 

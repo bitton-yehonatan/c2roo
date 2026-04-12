@@ -147,8 +147,12 @@ def marketplace_remove(name):
 
 @main.command()
 @click.argument("source")
-@click.option("--global", "target_global", is_flag=True, default=False, help="Install to ~/.roo/ (global).")
-@click.option("--project", "target_project", is_flag=True, default=False, help="Install to .roo/ (project).")
+@click.option(
+    "--global", "target_global", is_flag=True, default=False, help="Install to ~/.roo/ (global)."
+)
+@click.option(
+    "--project", "target_project", is_flag=True, default=False, help="Install to .roo/ (project)."
+)
 @click.option("--dry-run", is_flag=True, default=False, help="Show what would be converted.")
 @click.option("--force", is_flag=True, default=False, help="Overwrite existing files.")
 def convert(source, target_global, target_project, dry_run, force):
@@ -183,8 +187,12 @@ def convert(source, target_global, target_project, dry_run, force):
 
 @main.command()
 @click.argument("plugin_name")
-@click.option("--global", "target_global", is_flag=True, default=False, help="Install to ~/.roo/ (global).")
-@click.option("--project", "target_project", is_flag=True, default=False, help="Install to .roo/ (project).")
+@click.option(
+    "--global", "target_global", is_flag=True, default=False, help="Install to ~/.roo/ (global)."
+)
+@click.option(
+    "--project", "target_project", is_flag=True, default=False, help="Install to .roo/ (project)."
+)
 @click.option("--source", default=None, help="Which marketplace to search.")
 @click.option("--dry-run", is_flag=True, default=False, help="Show what would be converted.")
 @click.option("--force", is_flag=True, default=False, help="Overwrite existing files.")
@@ -201,7 +209,9 @@ def install(plugin_name, target_global, target_project, source, dry_run, force):
     result = registry.search_plugin(plugin_name, source_filter=source)
 
     if result is None:
-        raise click.ClickException(f"Plugin '{plugin_name}' not found in any registered marketplace.")
+        raise click.ClickException(
+            f"Plugin '{plugin_name}' not found in any registered marketplace."
+        )
 
     plugin_entry, mkt_source = result
     click.echo(f"Found '{plugin_name}' in marketplace '{mkt_source['name']}'")
@@ -233,7 +243,9 @@ def install(plugin_name, target_global, target_project, source, dry_run, force):
                     repo_url = f"https://github.com/{repo_url}.git"
                 sha = plugin_source.get("sha")
                 subdir = plugin_source.get("path")
-                plugin_path = clone_repo(repo_url, dest=Path(temp_dir) / "plugin", sha=sha, subdir=subdir)
+                plugin_path = clone_repo(
+                    repo_url, dest=Path(temp_dir) / "plugin", sha=sha, subdir=subdir
+                )
             else:
                 raise click.ClickException(f"Unknown source type: {source_type}")
         else:

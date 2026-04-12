@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import yaml
 
 from c2roo.sources.marketplace import DEFAULT_MARKETPLACES, MarketplaceRegistry
