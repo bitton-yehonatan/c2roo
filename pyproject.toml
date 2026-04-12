@@ -22,8 +22,19 @@ packages = ["src/c2roo"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+addopts = "--cov=c2roo --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["c2roo"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+fail_under = 80
 
 [dependency-groups]
 dev = [
     "pytest>=8.0",
+    "pytest-cov>=6.0",
 ]

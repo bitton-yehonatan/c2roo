@@ -10,6 +10,7 @@
   <img src="https://img.shields.io/badge/python-3.12+-3776AB?logo=python&logoColor=white" alt="Python 3.12+"/>
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License"/>
   <img src="https://img.shields.io/badge/tests-70%20passing-brightgreen" alt="Tests"/>
+  <img src="https://img.shields.io/badge/coverage-80%25-brightgreen" alt="Coverage 80%"/>
 </p>
 
 ---
@@ -173,7 +174,7 @@ git clone https://github.com/bitton-yehonatan/c2roo.git
 cd c2roo
 uv sync
 
-# Run tests
+# Run tests (coverage runs automatically)
 uv run pytest tests/ -v
 
 # Run the CLI
