@@ -70,7 +70,6 @@ commit_parser = "conventional"
 commit_message = "chore(release): {version} [skip ci]"
 
 [tool.semantic_release.changelog]
-template_dir = "templates"
 changelog_sections = [
     { type = "feat", section = "Features" },
     { type = "fix", section = "Bug Fixes" },
