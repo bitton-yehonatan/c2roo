@@ -12,7 +12,9 @@ from c2roo.models import (
 
 
 def test_plugin_metadata_required_fields():
-    meta = PluginMetadata(name="test", version=None, description="A test", author=None, homepage=None, license=None)
+    meta = PluginMetadata(
+        name="test", version=None, description="A test", author=None, homepage=None, license=None
+    )
     assert meta.name == "test"
     assert meta.version is None
 
@@ -38,7 +40,13 @@ def test_skill_with_all_fields():
 
 
 def test_command_minimal():
-    cmd = Command(name="commit", description="Create a commit", argument_hint=None, allowed_tools=None, body="Do a commit.")
+    cmd = Command(
+        name="commit",
+        description="Create a commit",
+        argument_hint=None,
+        allowed_tools=None,
+        body="Do a commit.",
+    )
     assert cmd.name == "commit"
     assert cmd.allowed_tools is None
 
@@ -96,7 +104,14 @@ def test_mcp_server_sse():
 
 def test_plugin_assembles_all_entities():
     plugin = Plugin(
-        metadata=PluginMetadata(name="test-plugin", version="1.0.0", description="Test", author=None, homepage=None, license=None),
+        metadata=PluginMetadata(
+            name="test-plugin",
+            version="1.0.0",
+            description="Test",
+            author=None,
+            homepage=None,
+            license=None,
+        ),
         skills=[],
         commands=[],
         agents=[],

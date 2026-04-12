@@ -33,8 +33,47 @@ show_missing = true
 skip_empty = true
 fail_under = 80
 
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["B"]  # allow bare asserts and common test patterns
+
 [dependency-groups]
 dev = [
+    "mypy>=1.20.0",
     "pytest>=8.0",
     "pytest-cov>=6.0",
+    "python-semantic-release>=10.5.3",
+    "ruff>=0.15.10",
+    "types-pyyaml>=6.0.12.20260408",
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src/c2roo"]
+ignore_missing_imports = true
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["src/c2roo/__init__.py:__version__"]
+branch = "main"
+changelog_file = "CHANGELOG.md"
+upload_to_vcs_release = true
+build_command = "uv build"
+commit_parser = "conventional"
+commit_message = "chore(release): {version} [skip ci]"
+
+[tool.semantic_release.changelog]
+changelog_sections = [
+    { type = "feat", section = "Features" },
+    { type = "fix", section = "Bug Fixes" },
+    { type = "perf", section = "Performance" },
+    { type = "refactor", section = "Refactoring" },
+    { type = "docs", section = "Documentation" },
 ]

@@ -8,14 +8,14 @@ def _resolve_plugin_root(value: str, install_path: Path) -> str:
     return value.replace("${CLAUDE_PLUGIN_ROOT}", str(install_path))
 
 
-def convert_mcp(servers: dict[str, McpServer], install_path: Path) -> dict:
+def convert_mcp(servers: dict[str, McpServer], install_path: Path) -> dict[str, dict[str, object]]:
     """Convert McpServer IRs to a Roo mcp.json-compatible dict."""
     if not servers:
         return {}
 
-    result = {}
+    result: dict[str, dict[str, object]] = {}
     for name, server in servers.items():
-        entry: dict = {}
+        entry: dict[str, object] = {}
 
         if server.command:
             entry["command"] = _resolve_plugin_root(server.command, install_path)

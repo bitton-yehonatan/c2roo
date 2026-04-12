@@ -1,5 +1,4 @@
 import subprocess
-from pathlib import Path
 from unittest.mock import patch
 
 from c2roo.sources.git_source import clone_repo, is_git_url

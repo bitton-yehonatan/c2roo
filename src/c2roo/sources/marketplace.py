@@ -4,10 +4,11 @@ import subprocess
 import tempfile
 import time
 from pathlib import Path
+from typing import cast
 
 import yaml
 
-DEFAULT_MARKETPLACES = [
+DEFAULT_MARKETPLACES: list[dict[str, str]] = [
     {
         "name": "official",
         "repo": "anthropics/claude-plugins-official",
@@ -34,21 +35,28 @@ class MarketplaceRegistry:
         if not self.config_path.exists():
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
             self.config_path.write_text(
-                yaml.dump({"marketplaces": DEFAULT_MARKETPLACES}, default_flow_style=False, sort_keys=False),
+                yaml.dump(
+                    {"marketplaces": DEFAULT_MARKETPLACES},
+                    default_flow_style=False,
+                    sort_keys=False,
+                ),
                 encoding="utf-8",
             )
 
-    def _load(self) -> dict:
+    def _load(self) -> dict[str, list[dict[str, str]]]:
         self.ensure_config()
-        return yaml.safe_load(self.config_path.read_text(encoding="utf-8")) or {"marketplaces": []}
+        loaded = yaml.safe_load(self.config_path.read_text(encoding="utf-8")) or {
+            "marketplaces": []
+        }
+        return cast(dict[str, list[dict[str, str]]], loaded)
 
-    def _save(self, data: dict) -> None:
+    def _save(self, data: dict[str, list[dict[str, str]]]) -> None:
         self.config_path.write_text(
             yaml.dump(data, default_flow_style=False, sort_keys=False),
             encoding="utf-8",
         )
 
-    def list_sources(self) -> list[dict]:
+    def list_sources(self) -> list[dict[str, str]]:
         return self._load().get("marketplaces", [])
 
     def add_source(self, name: str, repo: str, description: str) -> None:
@@ -67,7 +75,7 @@ class MarketplaceRegistry:
             raise ValueError(f"Marketplace '{name}' not found.")
         self._save(data)
 
-    def fetch_marketplace_json(self, source: dict) -> list[dict]:
+    def fetch_marketplace_json(self, source: dict[str, str]) -> list[dict[str, object]]:
         """Fetch and parse marketplace.json from a marketplace source."""
         repo = source["repo"]
         name = source["name"]
@@ -77,7 +85,10 @@ class MarketplaceRegistry:
         if cache_file.exists():
             age = time.time() - cache_file.stat().st_mtime
             if age < CACHE_TTL_SECONDS:
-                return json.loads(cache_file.read_text(encoding="utf-8"))
+                return cast(
+                    list[dict[str, object]],
+                    json.loads(cache_file.read_text(encoding="utf-8")),
+                )
 
         temp_dir = tempfile.mkdtemp(prefix="c2roo-mkt-")
         try:
@@ -93,7 +104,7 @@ class MarketplaceRegistry:
                 return []
 
             data = json.loads(manifest_path.read_text(encoding="utf-8"))
-            plugins = data.get("plugins", [])
+            plugins = cast(list[dict[str, object]], data.get("plugins", []))
 
             cache_file.write_text(json.dumps(plugins), encoding="utf-8")
 
@@ -103,7 +114,9 @@ class MarketplaceRegistry:
         finally:
             shutil.rmtree(temp_dir, ignore_errors=True)
 
-    def search_plugin(self, plugin_name: str, source_filter: str | None = None) -> tuple[dict, dict] | None:
+    def search_plugin(
+        self, plugin_name: str, source_filter: str | None = None
+    ) -> tuple[dict[str, object], dict[str, str]] | None:
         """Search marketplaces for a plugin by name.
 
         Returns (plugin_entry, marketplace_source) or None.

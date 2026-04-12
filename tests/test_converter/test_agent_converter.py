@@ -1,11 +1,20 @@
-from c2roo.models.agent import Agent
 from c2roo.converter.agent_converter import convert_agent
+from c2roo.models.agent import Agent
 
 
 def test_convert_agent_to_mode_and_rules():
-    agent = Agent(name="code-reviewer", description="Reviews code for bugs and quality issues",
-        body="You are an expert code reviewer. Analyze code for bugs, security issues, and quality problems.\n\nFocus on:\n- Logic errors\n- Security vulnerabilities\n- Performance issues",
-        model="sonnet", tools=["Read", "Grep", "Glob", "Bash"], color="yellow")
+    agent = Agent(
+        name="code-reviewer",
+        description="Reviews code for bugs and quality issues",
+        body=(
+            "You are an expert code reviewer. Analyze code for bugs, security issues, "
+            "and quality problems.\n\nFocus on:\n- Logic errors\n- Security vulnerabilities"
+            "\n- Performance issues"
+        ),
+        model="sonnet",
+        tools=["Read", "Grep", "Glob", "Bash"],
+        color="yellow",
+    )
     result = convert_agent(agent)
     mode = result.mode
     assert mode["slug"] == "code-reviewer"
@@ -21,8 +30,24 @@ def test_convert_agent_to_mode_and_rules():
 
 
 def test_convert_agent_tool_mapping():
-    agent = Agent(name="full-agent", description="Has all tools", body="Instructions.",
-        tools=["Read", "Grep", "Glob", "LS", "Write", "Edit", "MultiEdit", "Bash", "BashOutput", "KillShell", "WebFetch"])
+    agent = Agent(
+        name="full-agent",
+        description="Has all tools",
+        body="Instructions.",
+        tools=[
+            "Read",
+            "Grep",
+            "Glob",
+            "LS",
+            "Write",
+            "Edit",
+            "MultiEdit",
+            "Bash",
+            "BashOutput",
+            "KillShell",
+            "WebFetch",
+        ],
+    )
     result = convert_agent(agent)
     groups = result.mode["groups"]
     assert "read" in groups

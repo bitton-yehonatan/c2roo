@@ -16,8 +16,10 @@ def check_git_available() -> None:
     """Raise RuntimeError if git is not on PATH."""
     try:
         subprocess.run(["git", "--version"], capture_output=True, check=True)
-    except FileNotFoundError:
-        raise RuntimeError("git is not installed or not on PATH. Install git to use git sources.")
+    except FileNotFoundError as err:
+        raise RuntimeError(
+            "git is not installed or not on PATH. Install git to use git sources."
+        ) from err
 
 
 def clone_repo(url: str, dest: Path, sha: str | None = None, subdir: str | None = None) -> Path:

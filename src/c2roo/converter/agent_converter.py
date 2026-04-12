@@ -48,7 +48,7 @@ def _map_tools_to_groups(tools: list[str]) -> list[str]:
 
 @dataclass
 class ConvertedAgent:
-    mode: dict
+    mode: dict[str, object]
     rules_content: str
     slug: str
 
@@ -58,7 +58,7 @@ def convert_agent(agent: Agent) -> ConvertedAgent:
     slug = agent.name
     groups = _map_tools_to_groups(agent.tools)
 
-    mode = {
+    mode: dict[str, object] = {
         "slug": slug,
         "name": _humanize_name(slug),
         "description": agent.description,

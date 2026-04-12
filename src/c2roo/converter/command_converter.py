@@ -5,7 +5,7 @@ from c2roo.models.command import Command
 
 @dataclass
 class ConvertedCommand:
-    frontmatter: dict
+    frontmatter: dict[str, object]
     body: str
     name: str
     dropped_fields: list[str] = field(default_factory=list)
@@ -13,7 +13,7 @@ class ConvertedCommand:
 
 def convert_command(cmd: Command) -> ConvertedCommand:
     """Convert a Command IR to Roo slash command format."""
-    frontmatter: dict = {}
+    frontmatter: dict[str, object] = {}
 
     if cmd.description:
         frontmatter["description"] = cmd.description
