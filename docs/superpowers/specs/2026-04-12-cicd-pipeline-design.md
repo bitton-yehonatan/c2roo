@@ -59,7 +59,7 @@ A shared composite action handles the repeated setup steps (checkout, install UV
 - `uv run mypy src/c2roo`
 - Strict mode enabled (`strict = true` in `pyproject.toml`).
 - Blocks merge on failure.
-- **Implementation note:** the codebase has never been type-checked. Implementation must fix all mypy errors before making this job a blocking required check.
+- **Implementation note:** the codebase has never been type-checked under mypy strict. The implementation plan must sequence this carefully: add mypy config → fix all existing errors → land the `typecheck` job → *then* enable it as a required check in branch protection. The steady state is "all four jobs required"; the transition order matters so we don't block ourselves from merging the very PR that introduces the check.
 
 ### `test`
 - `uv run pytest tests/ -v`
@@ -252,7 +252,7 @@ CHANGELOG.md                    # created automatically by semantic-release on f
 - Job fails
 - Tag and GitHub Release already exist from the `release` job — out of sync with PyPI
 - Recovery: fix the underlying issue, manually rerun the `publish` job (reruns from the existing tag)
-- Prevention: `uv build && uv publish --dry-run` is not a thing, but the build job in CI already verifies the package builds
+- Prevention: the CI `build` job already verifies the package builds cleanly, so upload failures will almost always be environmental (network, PyPI outage) rather than a bad artifact
 
 **mypy finds new errors after code change merges**
 - This cannot happen: `typecheck` is a required check, PRs that introduce new errors cannot merge
