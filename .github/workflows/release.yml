@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  release:
+    # Only run if the triggering CI workflow succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      released: ${{ steps.semrel.outputs.released }}
+      version: ${{ steps.semrel.outputs.version }}
+      tag: ${{ steps.semrel.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Run semantic-release
+        id: semrel
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          # Determine next version without committing
+          CURRENT=$(uv run semantic-release version --print 2>/dev/null || true)
+          PREV=$(grep -E '^version = ' pyproject.toml | head -1 | cut -d'"' -f2)
+          echo "Current version in repo: $PREV"
+          echo "Next version from semantic-release: $CURRENT"
+          if [ -z "$CURRENT" ] || [ "$CURRENT" = "$PREV" ]; then
+            echo "No release needed."
+            echo "released=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Perform the release
+          uv run semantic-release version
+          uv run semantic-release publish
+          echo "released=true" >> "$GITHUB_OUTPUT"
+          echo "version=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "tag=v$CURRENT" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: release
+    if: ${{ needs.release.outputs.released == 'true' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/c2roo/${{ needs.release.outputs.version }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.tag }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Build distribution
+        run: uv build
+
+      - name: Publish to PyPI via Trusted Publishing
+        run: uv publish
