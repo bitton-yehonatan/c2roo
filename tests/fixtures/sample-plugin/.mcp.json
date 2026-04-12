@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "my-server": {
+      "command": "npx",
+      "args": ["-y", "@org/mcp-server"],
+      "env": {
+        "API_KEY": "test-key"
+      }
+    },
+    "remote-server": {
+      "url": "http://localhost:3000/sse",
+      "headers": {
+        "Authorization": "Bearer token"
+      }
+    }
+  }
+}
