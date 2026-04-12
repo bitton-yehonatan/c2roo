@@ -7,7 +7,7 @@ CLAUDE_SPECIFIC_FIELDS = ["disable-model-invocation", "user-invocable", "context
 
 @dataclass
 class ConvertedSkill:
-    frontmatter: dict
+    frontmatter: dict[str, object]
     body: str
     name: str
     dropped_fields: list[str] = field(default_factory=list)
@@ -15,7 +15,7 @@ class ConvertedSkill:
 
 def convert_skill(skill: Skill) -> ConvertedSkill:
     """Convert a Skill IR to Roo skill format (cleaned frontmatter)."""
-    frontmatter: dict = {
+    frontmatter: dict[str, object] = {
         "name": skill.name,
         "description": skill.description,
     }

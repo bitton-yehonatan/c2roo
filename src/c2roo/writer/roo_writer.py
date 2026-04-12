@@ -9,7 +9,7 @@ from c2roo.converter.command_converter import ConvertedCommand
 from c2roo.converter.skill_converter import ConvertedSkill
 
 
-def _render_markdown(frontmatter: dict, body: str) -> str:
+def _render_markdown(frontmatter: dict[str, object], body: str) -> str:
     """Render YAML frontmatter + markdown body into a complete file."""
     yaml_str = yaml.dump(frontmatter, default_flow_style=False, sort_keys=False).strip()
     return f"---\n{yaml_str}\n---\n\n{body}\n"
@@ -106,7 +106,7 @@ class RooWriter:
         path = self.output_root / "rules" / "converted-hooks-guidance.md"
         self._write_file(path, content)
 
-    def write_mcp(self, mcp_data: dict) -> None:
+    def write_mcp(self, mcp_data: dict[str, dict[str, object]]) -> None:
         """Write/merge MCP server configuration."""
         if not mcp_data:
             return

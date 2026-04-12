@@ -30,19 +30,19 @@ def _run_conversion(plugin_path: Path, output_root: Path, force: bool, dry_run: 
     report = ConversionReport(plugin_name=plugin.metadata.name)
 
     for skill_ir in plugin.skills:
-        converted = convert_skill(skill_ir)
+        converted_skill = convert_skill(skill_ir)
         source_dir = plugin_path / "skills" / skill_ir.name
-        writer.write_skill(converted, source_dir)
-        report.add_skill(converted.name, dropped=converted.dropped_fields)
+        writer.write_skill(converted_skill, source_dir)
+        report.add_skill(converted_skill.name, dropped=converted_skill.dropped_fields)
 
     for cmd_ir in plugin.commands:
-        converted = convert_command(cmd_ir)
-        writer.write_command(converted)
-        report.add_command(converted.name, dropped=converted.dropped_fields)
+        converted_cmd = convert_command(cmd_ir)
+        writer.write_command(converted_cmd)
+        report.add_command(converted_cmd.name, dropped=converted_cmd.dropped_fields)
 
     for agent_ir in plugin.agents:
-        converted = convert_agent(agent_ir)
-        writer.write_agent(converted)
+        converted_agent = convert_agent(agent_ir)
+        writer.write_agent(converted_agent)
         report.add_agent(agent_ir.name)
 
     if plugin.hooks:
@@ -60,7 +60,7 @@ def _run_conversion(plugin_path: Path, output_root: Path, force: bool, dry_run: 
 
 @click.group()
 @click.version_option()
-def main():
+def main() -> None:
     """Convert Claude Code plugins to Roo Code format."""
 
 
@@ -68,13 +68,13 @@ def main():
 
 
 @main.group()
-def marketplace():
+def marketplace() -> None:
     """Browse and manage plugin marketplace sources."""
 
 
 @marketplace.command("browse")
 @click.option("--source", default=None, help="Filter to a specific marketplace source.")
-def marketplace_browse(source):
+def marketplace_browse(source: str | None) -> None:
     """List plugins from registered marketplaces."""
     from rich.console import Console
     from rich.table import Table
@@ -94,7 +94,11 @@ def marketplace_browse(source):
         try:
             plugins = registry.fetch_marketplace_json(src)
             for plugin in plugins:
-                table.add_row(plugin.get("name", "?"), plugin.get("description", ""), src["name"])
+                table.add_row(
+                    str(plugin.get("name", "?")),
+                    str(plugin.get("description", "")),
+                    src["name"],
+                )
         except Exception as e:
             console.print(f"[yellow]Warning: could not fetch {src['name']}: {e}[/yellow]")
 
@@ -105,7 +109,7 @@ def marketplace_browse(source):
 @click.argument("repo")
 @click.option("--name", required=True, help="Short name for this marketplace.")
 @click.option("--description", default="", help="Description of this marketplace.")
-def marketplace_add(repo, name, description):
+def marketplace_add(repo: str, name: str, description: str) -> None:
     """Register a new marketplace source (owner/repo format)."""
     registry = MarketplaceRegistry()
     registry.add_source(name, repo, description)
@@ -113,7 +117,7 @@ def marketplace_add(repo, name, description):
 
 
 @marketplace.command("list")
-def marketplace_list():
+def marketplace_list() -> None:
     """Show registered marketplace sources."""
     from rich.console import Console
     from rich.table import Table
@@ -135,7 +139,7 @@ def marketplace_list():
 
 @marketplace.command("remove")
 @click.argument("name")
-def marketplace_remove(name):
+def marketplace_remove(name: str) -> None:
     """Remove a marketplace source."""
     registry = MarketplaceRegistry()
     registry.remove_source(name)
@@ -155,7 +159,13 @@ def marketplace_remove(name):
 )
 @click.option("--dry-run", is_flag=True, default=False, help="Show what would be converted.")
 @click.option("--force", is_flag=True, default=False, help="Overwrite existing files.")
-def convert(source, target_global, target_project, dry_run, force):
+def convert(
+    source: str,
+    target_global: bool,
+    target_project: bool,
+    dry_run: bool,
+    force: bool,
+) -> None:
     """Convert a Claude Code plugin from a local path or git URL."""
     if not target_global and not target_project:
         raise click.UsageError("Must specify --global or --project.")
@@ -196,7 +206,14 @@ def convert(source, target_global, target_project, dry_run, force):
 @click.option("--source", default=None, help="Which marketplace to search.")
 @click.option("--dry-run", is_flag=True, default=False, help="Show what would be converted.")
 @click.option("--force", is_flag=True, default=False, help="Overwrite existing files.")
-def install(plugin_name, target_global, target_project, source, dry_run, force):
+def install(
+    plugin_name: str,
+    target_global: bool,
+    target_project: bool,
+    source: str | None,
+    dry_run: bool,
+    force: bool,
+) -> None:
     """Install a plugin from a marketplace, converting to Roo format."""
     if not target_global and not target_project:
         raise click.UsageError("Must specify --global or --project.")

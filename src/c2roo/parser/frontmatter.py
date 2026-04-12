@@ -1,7 +1,7 @@
 import yaml
 
 
-def parse_frontmatter(content: str) -> tuple[dict, str]:
+def parse_frontmatter(content: str) -> tuple[dict[str, object], str]:
     """Extract YAML frontmatter and body from a markdown string.
 
     Returns (metadata_dict, body_string). If no frontmatter is found,

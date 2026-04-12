@@ -52,3 +52,9 @@ dev = [
     "ruff>=0.15.10",
     "types-pyyaml>=6.0.12.20260408",
 ]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src/c2roo"]
+ignore_missing_imports = true
