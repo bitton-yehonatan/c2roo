@@ -58,3 +58,23 @@ python_version = "3.12"
 strict = true
 files = ["src/c2roo"]
 ignore_missing_imports = true
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["src/c2roo/__init__.py:__version__"]
+branch = "main"
+changelog_file = "CHANGELOG.md"
+upload_to_vcs_release = true
+build_command = "uv build"
+commit_parser = "conventional"
+commit_message = "chore(release): {version} [skip ci]"
+
+[tool.semantic_release.changelog]
+template_dir = "templates"
+changelog_sections = [
+    { type = "feat", section = "Features" },
+    { type = "fix", section = "Bug Fixes" },
+    { type = "perf", section = "Performance" },
+    { type = "refactor", section = "Refactoring" },
+    { type = "docs", section = "Documentation" },
+]
