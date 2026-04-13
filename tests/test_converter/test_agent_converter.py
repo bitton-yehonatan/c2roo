@@ -65,3 +65,12 @@ def test_convert_agent_no_model():
     agent = Agent(name="basic", description="Basic agent", body="Do things.")
     result = convert_agent(agent)
     assert "Originally configured for model" not in result.rules_content
+
+
+def test_convert_agent_empty_tools_inherits_all_groups():
+    # Claude Code agents without a `tools:` field inherit the full toolset.
+    # Roo has no equivalent, so we expand to every group — otherwise the
+    # converted mode loads but has zero tool access.
+    agent = Agent(name="unscoped", description="No tools field", body="Do things.", tools=[])
+    result = convert_agent(agent)
+    assert sorted(result.mode["groups"]) == ["command", "edit", "mcp", "read"]

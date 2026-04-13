@@ -20,6 +20,10 @@ TOOL_TO_GROUP = {
 
 MCP_TOOLS = {"WebFetch", "WebSearch", "TodoWrite"}
 
+# Claude Code agents with no `tools` frontmatter inherit the full parent toolset.
+# Roo has no equivalent "inherit all" semantics, so we expand to every tool group.
+ALL_GROUPS = ["read", "edit", "command", "mcp"]
+
 
 def _humanize_name(slug: str) -> str:
     """Convert kebab-case slug to Title Case name."""
@@ -36,7 +40,13 @@ def _extract_role_definition(body: str, max_length: int = 500) -> str:
 
 
 def _map_tools_to_groups(tools: list[str]) -> list[str]:
-    """Map Claude Code tool names to Roo tool groups."""
+    """Map Claude Code tool names to Roo tool groups.
+
+    An empty tools list means the agent inherits the full parent toolset
+    in Claude Code, so we expand it to every Roo group.
+    """
+    if not tools:
+        return list(ALL_GROUPS)
     groups = set()
     for tool in tools:
         if tool in TOOL_TO_GROUP:
