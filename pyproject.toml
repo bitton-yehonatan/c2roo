@@ -1,6 +1,6 @@
 [project]
 name = "c2roo"
-version = "1.0.0"
+version = "1.0.1"
 description = "Convert Claude Code plugins to Roo Code format"
 requires-python = ">=3.12"
 dependencies = [
